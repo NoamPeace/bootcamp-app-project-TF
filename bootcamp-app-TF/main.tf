@@ -1,17 +1,3 @@
-# Configure the Azure provider
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 2.81.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
 # Create Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
@@ -138,6 +124,7 @@ resource "azurerm_lb" "publicLB" {
 resource "azurerm_lb_backend_address_pool" "backend_address_pool_public" {
   loadbalancer_id = azurerm_lb.publicLB.id
   name            = "bootcamp_Week5-Backend_Address_Pool"
+
 }
 
 
