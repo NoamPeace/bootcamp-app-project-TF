@@ -499,20 +499,3 @@ data "azurerm_lb_backend_address_pool" "data_pool" {
   loadbalancer_id = data.azurerm_lb.data_lb.id
 }
 
-
-
-
-
-
-
-#Get ip data
-data "azurerm_public_ip" "ip" {
-  name                = azurerm_public_ip.publicip.name
-  resource_group_name = var.resource_group_name
-  depends_on          = [azurerm_virtual_machine.vm]
-
-}
-#Print public ip
-output "public_ip_address" {
-  value = data.azurerm_public_ip.ip.ip_address
-}
