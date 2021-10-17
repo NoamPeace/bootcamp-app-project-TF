@@ -47,6 +47,18 @@ resource "azurerm_public_ip" "publicip" {
 }
 
 
+# Delay before network interfaces creation for 30 seconds
+resource "null_resource" "delay_nics" {
+  provisioner "local-exec" {
+    command = "sleep 30"
+  }
+
+  triggers = {
+    "before" = "${azurerm_network_interface.nic.id}"
+  }
+}
+
+
 
 # Create a network interface for first VM
 resource "azurerm_network_interface" "nic" {
