@@ -302,7 +302,7 @@ resource "azurerm_network_interface_security_group_association" "nsg_nic3" {
 #Associate db network interface to db subnet_network_security_group
 resource "azurerm_network_interface_security_group_association" "dbnsg" {
   network_interface_id      = azurerm_network_interface.dbnic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_security_group_id = azurerm_network_security_group.dbnsg.id
 }
 
 
