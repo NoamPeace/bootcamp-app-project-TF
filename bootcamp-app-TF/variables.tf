@@ -37,10 +37,10 @@ variable "ubuntu_username" {
   description = "Administrator user name for Ubuntu virtual machine"
 }
 
-variable "ubuntu_password" {
-  type        = string
-  description = "Password for Ubuntu virtual machine, Password must meet Azure complexity requirements"
-}
+# variable "ubuntu_password" {
+#   type        = string
+#   description = "Password for Ubuntu virtual machine, Password must meet Azure complexity requirements"
+# }
 
 # variable "pg_admin" {
 #   type        = string

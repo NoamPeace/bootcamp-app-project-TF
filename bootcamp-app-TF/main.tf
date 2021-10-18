@@ -2,6 +2,10 @@
 resource "random_password" "password" {
   length           = 16
   special          = true
+  min_upper        = 1
+  min_lower        = 1
+  min_numeric      = 1
+  min_special      = 1
   override_special = "_%@"
 }
 
@@ -330,7 +334,7 @@ resource "azurerm_virtual_machine" "vm" {
   os_profile {
     computer_name  = "bootcampWeek5VM1"
     admin_username = var.ubuntu_username
-    admin_password = var.ubuntu_password
+    admin_password = random_password.password.result
   }
 
   os_profile_linux_config {
@@ -381,7 +385,7 @@ resource "azurerm_virtual_machine" "vm2" {
   os_profile {
     computer_name  = "bootcampWeek5VM2"
     admin_username = var.ubuntu_username
-    admin_password = var.ubuntu_password
+    admin_password = random_password.password.result
   }
 
   os_profile_linux_config {
@@ -432,7 +436,7 @@ resource "azurerm_virtual_machine" "vm3" {
   os_profile {
     computer_name  = "bootcampWeek5VM3"
     admin_username = var.ubuntu_username
-    admin_password = var.ubuntu_password
+    admin_password = random_password.password.result
   }
 
   os_profile_linux_config {
@@ -480,9 +484,9 @@ resource "azurerm_virtual_machine" "dbvm" {
   }
 
   os_profile {
-    computer_name  = "bootcampWeek5VM1"
+    computer_name  = "bootcampWeek5VM4-DB"
     admin_username = var.ubuntu_username
-    admin_password = var.ubuntu_password
+    admin_password = random_password.password.result
   }
 
   os_profile_linux_config {
