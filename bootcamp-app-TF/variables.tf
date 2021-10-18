@@ -46,20 +46,14 @@ variable "ubuntu_password" {
 #   type        = string
 #   description = "Administrator user name for the database"
 # }
-
 # variable "pg_admin_password" {
 #   type        = string
 #   description = "Password for the database, Password must meet Azure complexity requirements"
 # }
-
-
-
 # variable "okta_url" {
 #   type        = string
 #   description = "Okta developer URL"
 # }
-
-
 # variable "okta_clientid" {
 #   type        = string
 #   description = "Okta dev client ID for the application"
@@ -69,4 +63,3 @@ variable "ubuntu_password" {
 #   type        = string
 #   description = "Okta dev secret for the application"
 # }
-

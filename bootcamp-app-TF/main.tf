@@ -330,16 +330,16 @@ resource "azurerm_virtual_machine" "vm" {
 }
 
 # resource "azurerm_virtual_machine_extension" "app1_terraform" {
-#  name                 = "VM1_customscript"
-#  virtual_machine_id   = azurerm_virtual_machine.vm.id
-#  publisher            = "Microsoft.Azure.Extensions"
-#  type                 = "CustomScript"
-#  type_handler_version = "2.0"
+#   name                 = "VM1_customscript"
+#   virtual_machine_id   = azurerm_virtual_machine.vm.id
+#   publisher            = "Microsoft.Azure.Extensions"
+#   type                 = "CustomScript"
+#   type_handler_version = "2.0"
 #
-#  settings = <<SETTINGS
+#   settings = <<SETTINGS
 #    {
 #        "fileUris": ["https://raw.githubusercontent.com/NoamPeace/bootcamp-app-project-TF/main/vm-scripts/appvm-script.sh"],
-#        "commandToExecute": "[concat('bash appvm-script.sh', ' ', '${data.azurerm_public_ip.ip.ip_address}', ' ', '${var.okta_url}', ' ',  '${var.okta_clientid}', ' ', '${var.okta_secret}', ' ', 'replace_with_data_domain_of_db', ' ', '${var.pg_admin}', ' ', '${var.pg_admin_password}', ' ', '${var.ubuntu_username}')]"
+#        "commandToExecute": "appvm-script.sh ${join(" ", [data.azurerm_public_ip.ip.ip_address, var.okta_url, var.okta_clientid, var.okta_secret, "replace_with_data_domain_of_db", var.pg_admin, var.pg_admin_password, var.ubuntu_username])}",
 #    }
 # SETTINGS
 # }
