@@ -57,79 +57,6 @@ resource "azurerm_public_ip" "publicip" {
 }
 
 
-# Delay before network interfaces creation for 30 seconds
-resource "null_resource" "delay_nics" {
-  provisioner "local-exec" {
-    command = "sleep 30"
-  }
-
-  triggers = {
-    "before" = "${azurerm_network_interface.nic.id}"
-  }
-}
-
-
-
-# Create a network interface for first VM
-resource "azurerm_network_interface" "nic" {
-  name                = "bootcamp_Week5-NIC1"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "bootcamp_Week5-NIC1_Conf"
-    subnet_id                     = azurerm_subnet.subnet[0].id
-    private_ip_address_allocation = "dynamic"
-  }
-}
-
-
-
-
-# Create a network interface for second VM
-resource "azurerm_network_interface" "nic2" {
-  name                = "bootcamp_Week5-NIC2"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "bootcamp_Week5-NIC2_Conf"
-    subnet_id                     = azurerm_subnet.subnet[0].id
-    private_ip_address_allocation = "dynamic"
-  }
-}
-
-
-# Create a network interface for third VM
-resource "azurerm_network_interface" "nic3" {
-  name                = "bootcamp_Week5-NIC3"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "bootcamp_Week5-NIC3_Conf"
-    subnet_id                     = azurerm_subnet.subnet[0].id
-    private_ip_address_allocation = "dynamic"
-  }
-}
-
-
-
-
-# Create a network interface for the DB VM
-resource "azurerm_network_interface" "dbnic" {
-  name                = "bootcamp_Week5-NIC-DB"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  ip_configuration {
-    name                          = "bootcamp_Week5-NIC-DB_Conf"
-    subnet_id                     = azurerm_subnet.subnet[1].id
-    private_ip_address_allocation = "dynamic"
-  }
-}
-
-
 
 
 #Create a Load Balancer
@@ -153,23 +80,23 @@ resource "azurerm_lb_backend_address_pool" "backend_address_pool_public" {
 
 
 #Associate network interface1 to the load balancer backend address pool
-resource "azurerm_network_interface_backend_address_pool_association" "nic_back_association" {
-  network_interface_id    = azurerm_network_interface.nic.id
-  ip_configuration_name   = azurerm_network_interface.nic.ip_configuration[0].name
-  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_address_pool_public.id
-}
+# resource "azurerm_network_interface_backend_address_pool_association" "nic_back_association" {
+#   network_interface_id    = azurerm_network_interface.nic.id
+#   ip_configuration_name   = azurerm_network_interface.nic.ip_configuration[0].name
+#   backend_address_pool_id = azurerm_lb_backend_address_pool.backend_address_pool_public.id
+# }
 #Associate network interface2 to the load balancer backend address pool
-resource "azurerm_network_interface_backend_address_pool_association" "nic2_back_association" {
-  network_interface_id    = azurerm_network_interface.nic2.id
-  ip_configuration_name   = azurerm_network_interface.nic2.ip_configuration[0].name
-  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_address_pool_public.id
-}
+# resource "azurerm_network_interface_backend_address_pool_association" "nic2_back_association" {
+#   network_interface_id    = azurerm_network_interface.nic2.id
+#   ip_configuration_name   = azurerm_network_interface.nic2.ip_configuration[0].name
+#   backend_address_pool_id = azurerm_lb_backend_address_pool.backend_address_pool_public.id
+# }
 #Associate network interface3 to the load balancer backend address pool
-resource "azurerm_network_interface_backend_address_pool_association" "nic3_back_association" {
-  network_interface_id    = azurerm_network_interface.nic3.id
-  ip_configuration_name   = azurerm_network_interface.nic3.ip_configuration[0].name
-  backend_address_pool_id = azurerm_lb_backend_address_pool.backend_address_pool_public.id
-}
+# resource "azurerm_network_interface_backend_address_pool_association" "nic3_back_association" {
+#   network_interface_id    = azurerm_network_interface.nic3.id
+#   ip_configuration_name   = azurerm_network_interface.nic3.ip_configuration[0].name
+#   backend_address_pool_id = azurerm_lb_backend_address_pool.backend_address_pool_public.id
+# }
 
 
 
@@ -251,27 +178,6 @@ resource "azurerm_network_security_group" "nsg" {
 }
 
 
-# Create Network Security Group and rules for the DB
-resource "azurerm_network_security_group" "dbnsg" {
-  name                = "bootcamp_Week5-DB-NSG"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "22"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-}
-
 
 
 #Associate subnet to subnet_network_security_group
@@ -281,140 +187,87 @@ resource "azurerm_subnet_network_security_group_association" "public" {
 }
 
 
-#Associate private subnet to subnet_DB network_security_group
-resource "azurerm_subnet_network_security_group_association" "private" {
-  subnet_id                 = azurerm_subnet.subnet[1].id
-  network_security_group_id = azurerm_network_security_group.dbnsg.id
-}
-
-
-
 
 #Associate network interface1 to public subnet_network_security_group
-resource "azurerm_network_interface_security_group_association" "nsg_nic" {
-  network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
+# resource "azurerm_network_interface_security_group_association" "nsg_nic" {
+#   network_interface_id      = azurerm_network_interface.nic.id
+#   network_security_group_id = azurerm_network_security_group.nsg.id
+# }
 
 
 #Associate network interface2 to public subnet_network_security_group
-resource "azurerm_network_interface_security_group_association" "nsg_nic2" {
-  network_interface_id      = azurerm_network_interface.nic2.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
+# resource "azurerm_network_interface_security_group_association" "nsg_nic2" {
+#   network_interface_id      = azurerm_network_interface.nic2.id
+#   network_security_group_id = azurerm_network_security_group.nsg.id
+# }
 
 #Associate network interface3 to public subnet_network_security_group
-resource "azurerm_network_interface_security_group_association" "nsg_nic3" {
-  network_interface_id      = azurerm_network_interface.nic3.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
+# resource "azurerm_network_interface_security_group_association" "nsg_nic3" {
+#   network_interface_id      = azurerm_network_interface.nic3.id
+#   network_security_group_id = azurerm_network_security_group.nsg.id
+# }
 
 
 #Associate db network interface to db subnet_network_security_group
-resource "azurerm_network_interface_security_group_association" "dbnsg" {
-  network_interface_id      = azurerm_network_interface.dbnic.id
-  network_security_group_id = azurerm_network_security_group.dbnsg.id
-}
-
-
-# Create a linux application virtual machine 1 using virtual machine module
-module "linux_virtual_machine_module_appvm1" {
-  source = "../tf-modules/vm-module"
-
-  vm_name               = "bootcamp_Week5-AppVM1"
-  location              = var.location
-  resource_group_name   = azurerm_resource_group.rg.name
-  public_vm_size        = var.public_vm_size
-  availability_set_id   = azurerm_availability_set.availability_set1.id
-  network_interface_ids = [azurerm_network_interface.nic.id]
-
-  storage_os_disk_name = "bootcamp_Week5-AppVM1_OsDisk"
-  computer_name        = "bootcampWeek5VM1"
-  ubuntu_username      = var.ubuntu_username
-  admin_password       = random_string.password.result
-}
-
-# resource "azurerm_virtual_machine_extension" "app1_terraform" {
-#   name                 = "VM1_customscript"
-#   virtual_machine_id   = azurerm_virtual_machine.vm.id
-#   publisher            = "Microsoft.Azure.Extensions"
-#   type                 = "CustomScript"
-#   type_handler_version = "2.0"
-#
-#   settings = <<SETTINGS
-#    {
-#        "fileUris": ["https://raw.githubusercontent.com/NoamPeace/bootcamp-app-project-TF/main/vm-scripts/appvm-script.sh"],
-#        "commandToExecute": "appvm-script.sh ${join(" ", [data.azurerm_public_ip.ip.ip_address, var.okta_url, var.okta_clientid, var.okta_secret, "replace_with_data_domain_of_db", var.pg_admin, var.pg_admin_password, var.ubuntu_username])}",
-#    }
-# SETTINGS
+# resource "azurerm_network_interface_security_group_association" "dbnsg" {
+#   network_interface_id      = azurerm_network_interface.dbnic.id
+#   network_security_group_id = azurerm_network_security_group.dbnsg.id
 # }
 
 
-# Create a linux application virtual machine 2 using virtual machine module
-module "linux_virtual_machine_module_appvm2" {
-  source = "../tf-modules/vm-module"
 
-  vm_name               = "bootcamp_Week5-AppVM2"
-  location              = var.location
-  resource_group_name   = azurerm_resource_group.rg.name
-  public_vm_size        = var.public_vm_size
-  availability_set_id   = azurerm_availability_set.availability_set1.id
-  network_interface_ids = [azurerm_network_interface.nic2.id]
+resource "azurerm_virtual_machine_scale_set" "vmss" {
+  name                = "vmscaleset"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  upgrade_policy_mode = "Manual"
 
-  storage_os_disk_name = "bootcamp_Week5-AppVM2_OsDisk"
-  computer_name        = "bootcampWeek5VM2"
-  ubuntu_username      = var.ubuntu_username
-  admin_password       = random_string.password.result
+  sku {
+    name     = var.public_vm_size
+    tier     = "Standard"
+    capacity = 2
+  }
+
+  storage_profile_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+
+  storage_profile_os_disk {
+    name              = ""
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+
+  os_profile {
+    computer_name_prefix = "appVM"
+    admin_username       = var.ubuntu_username
+    admin_password       = random_string.password.result
+  }
+
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
+
+  network_profile {
+    name    = "terraformnetworkprofile"
+    primary = true
+
+    ip_configuration {
+      name                                   = "IPConfiguration"
+      subnet_id                              = azurerm_subnet.subnet[0].id
+      load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.backend_address_pool_public.id]
+      primary                                = true
+    }
+  }
 }
 
-# resource "azurerm_virtual_machine_extension" "app2_terraform" {
-#   name                 = "VM2_customscript"
-#   virtual_machine_id   = azurerm_virtual_machine.vm2.id
-#   publisher            = "Microsoft.Azure.Extensions"
-#   type                 = "CustomScript"
-#   type_handler_version = "2.0"
-#
-#   settings = <<SETTINGS
-#     {
-#         "fileUris": ["https://raw.githubusercontent.com/NoamPeace/bootcamp-app-project-TF/main/vm-scripts/appvm-script.sh"],
-#         "commandToExecute": "bash appvm-script.sh ${data.azurerm_public_ip.ip.ip_address} ${var.okta_url} ${var.okta_clientid} ${var.okta_secret} replace_with_data_domain_of_db ${var.pg_admin} ${var.pg_admin_password} ${var.ubuntu_username}"
-#     }
-# SETTINGS
-# }
 
 
-# Create a linux application virtual machine 3 using virtual machine module
-module "linux_virtual_machine_module_appvm3" {
-  source = "../tf-modules/vm-module"
 
-  vm_name               = "bootcamp_Week5-AppVM3"
-  location              = var.location
-  resource_group_name   = azurerm_resource_group.rg.name
-  public_vm_size        = var.public_vm_size
-  availability_set_id   = azurerm_availability_set.availability_set1.id
-  network_interface_ids = [azurerm_network_interface.nic3.id]
-
-  storage_os_disk_name = "bootcamp_Week5-AppVM3_OsDisk"
-  computer_name        = "bootcampWeek5VM3"
-  ubuntu_username      = var.ubuntu_username
-  admin_password       = random_string.password.result
-}
-
-
-# resource "azurerm_virtual_machine_extension" "app3_terraform" {
-#   name                 = "VM3_customscript"
-#   virtual_machine_id   = azurerm_virtual_machine.vm3.id
-#   publisher            = "Microsoft.Azure.Extensions"
-#   type                 = "CustomScript"
-#   type_handler_version = "2.0"
-#
-#   settings = <<SETTINGS
-#     {
-#         "fileUris": ["https://raw.githubusercontent.com/NoamPeace/bootcamp-app-project-TF/main/vm-scripts/appvm-script.sh"],
-#         "commandToExecute": "bash appvm-script.sh ${data.azurerm_public_ip.ip.ip_address} ${var.okta_url} ${var.okta_clientid} ${var.okta_secret} replace_with_data_domain_of_db ${var.pg_admin} ${var.pg_admin_password} ${var.ubuntu_username}"
-#     }
-# SETTINGS
-# }
 
 
 #Create Postgresql Server
