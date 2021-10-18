@@ -35,7 +35,13 @@ variable "subnet_prefix" {
 variable "ubuntu_username" {
   type        = string
   description = "Administrator user name for Ubuntu virtual machine"
+  default     = "ubuntu"
 }
+
+# variable "access_key_string" {
+#   type        = string
+#   description = "storage blob access key"
+# }
 
 # variable "ubuntu_password" {
 #   type        = string

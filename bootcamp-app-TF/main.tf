@@ -1,3 +1,14 @@
+# Configure terraform to store tfstate in azure blob storage
+terraform {
+  backend "azurerm" {
+    storage_account_name = "tfstate15063"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+    access_key           = "AWXtBbGDbraudtICkKWcFv66o7NqeEDD6qnDztNrwUWRFOPBBkPWA06CK/QJ6e0SUm/s4zX5I0Z3F2MKguNOXw=="
+  }
+}
+
+
 # Generate a random password
 resource "random_string" "password" {
   length           = 16
