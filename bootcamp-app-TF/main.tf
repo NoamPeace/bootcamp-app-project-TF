@@ -436,7 +436,7 @@ resource "azurerm_virtual_machine" "vm3" {
   os_profile {
     computer_name  = "bootcampWeek5VM3"
     admin_username = var.ubuntu_username
-    admin_password = random_string.string.result
+    admin_password = random_string.password.result
   }
 
   os_profile_linux_config {
