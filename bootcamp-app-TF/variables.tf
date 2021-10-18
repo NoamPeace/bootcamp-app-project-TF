@@ -48,14 +48,16 @@ variable "ubuntu_username" {
 #   description = "Password for Ubuntu virtual machine, Password must meet Azure complexity requirements"
 # }
 
-# variable "pg_admin" {
-#   type        = string
-#   description = "Administrator user name for the database"
-# }
-# variable "pg_admin_password" {
-#   type        = string
-#   description = "Password for the database, Password must meet Azure complexity requirements"
-# }
+variable "pg_admin" {
+  type        = string
+  description = "Administrator user name for the database"
+}
+
+variable "pg_admin_password" {
+  type        = string
+  description = "Password for the database, Password must meet Azure complexity requirements"
+}
+
 # variable "okta_url" {
 #   type        = string
 #   description = "Okta developer URL"

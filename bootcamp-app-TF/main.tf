@@ -417,38 +417,33 @@ module "linux_virtual_machine_module_appvm3" {
 # }
 
 
-# Create a Linux virtual machine for db
-resource "azurerm_virtual_machine" "dbvm" {
-  name                = "bootcamp_Week5-dbVM"
-  location            = var.location
+#Create Postgresql Server
+resource "azurerm_postgresql_server" "postgres" {
+  name                = "bootcamp-week5-db"
+  location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  #  availability_set_id   = azurerm_availability_set.availability_set1.id
-  network_interface_ids = [azurerm_network_interface.dbnic.id]
-  vm_size               = var.public_vm_size
 
-  storage_os_disk {
-    name              = "bootcamp_Week5-dbVM1_OsDisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+  sku_name = "B_Gen5_2"
 
-  }
+  storage_mb                   = 5120
+  backup_retention_days        = 7
+  geo_redundant_backup_enabled = false
+  auto_grow_enabled            = true
 
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-
-  os_profile {
-    computer_name  = "bootcampWeek5VM4-DB"
-    admin_username = var.ubuntu_username
-    admin_password = random_string.password.result
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
+  administrator_login          = var.pg_admin
+  administrator_login_password = var.pg_admin_password
+  version                      = "11"
+  ssl_enforcement_enabled      = false
 }
 
+
+
+
+#Create Postgres firewall rule
+resource "azurerm_postgresql_firewall_rule" "postgres_firewall" {
+  name                = "bootcamp-week5-db-firewall"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_postgresql_server.postgres.name
+  start_ip_address    = data.azurerm_public_ip.ip.ip_address
+  end_ip_address      = data.azurerm_public_ip.ip.ip_address
+}
