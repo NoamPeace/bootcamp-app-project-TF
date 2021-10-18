@@ -223,7 +223,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "22"
     destination_port_range     = "22"
-    source_address_prefix      = "2.53.130.34"
+    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
   security_rule {
@@ -306,40 +306,21 @@ resource "azurerm_network_interface_security_group_association" "dbnsg" {
 }
 
 
+# Create a linux application virtual machine 1 using virtual machine module
+module "linux_virtual_machine_module_appvm1" {
+  source = "../tf-modules/vm-module"
 
-# Create a Linux virtual machine 1
-resource "azurerm_virtual_machine" "vm" {
-  name                  = "bootcamp_Week5-AppVM1"
+  vm_name               = "bootcamp_Week5-AppVM1"
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
+  public_vm_size        = var.public_vm_size
   availability_set_id   = azurerm_availability_set.availability_set1.id
   network_interface_ids = [azurerm_network_interface.nic.id]
-  vm_size               = var.public_vm_size
 
-  storage_os_disk {
-    name              = "bootcamp_Week5-AppVM1_OsDisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-
-  }
-
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-
-  os_profile {
-    computer_name  = "bootcampWeek5VM1"
-    admin_username = var.ubuntu_username
-    admin_password = random_string.password.result
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
+  storage_os_disk_name = "bootcamp_Week5-AppVM1_OsDisk"
+  computer_name        = "bootcampWeek5VM1"
+  ubuntu_username      = var.ubuntu_username
+  admin_password       = random_string.password.result
 }
 
 # resource "azurerm_virtual_machine_extension" "app1_terraform" {
@@ -358,39 +339,21 @@ resource "azurerm_virtual_machine" "vm" {
 # }
 
 
-# Create a Linux virtual machine 2
-resource "azurerm_virtual_machine" "vm2" {
-  name                  = "bootcamp_Week5-AppVM2"
+# Create a linux application virtual machine 2 using virtual machine module
+module "linux_virtual_machine_module_appvm2" {
+  source = "../tf-modules/vm-module"
+
+  vm_name               = "bootcamp_Week5-AppVM2"
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic2.id]
-  vm_size               = var.public_vm_size
+  public_vm_size        = var.public_vm_size
   availability_set_id   = azurerm_availability_set.availability_set1.id
+  network_interface_ids = [azurerm_network_interface.nic2.id]
 
-  storage_os_disk {
-    name              = "bootcamp_Week5-AppVM2_OsDisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-
-  }
-
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-
-  os_profile {
-    computer_name  = "bootcampWeek5VM2"
-    admin_username = var.ubuntu_username
-    admin_password = random_string.password.result
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
+  storage_os_disk_name = "bootcamp_Week5-AppVM2_OsDisk"
+  computer_name        = "bootcampWeek5VM2"
+  ubuntu_username      = var.ubuntu_username
+  admin_password       = random_string.password.result
 }
 
 # resource "azurerm_virtual_machine_extension" "app2_terraform" {
@@ -409,40 +372,23 @@ resource "azurerm_virtual_machine" "vm2" {
 # }
 
 
-# Create a Linux virtual machine 3
-resource "azurerm_virtual_machine" "vm3" {
-  name                  = "bootcamp_Week5-AppVM3"
+# Create a linux application virtual machine 3 using virtual machine module
+module "linux_virtual_machine_module_appvm3" {
+  source = "../tf-modules/vm-module"
+
+  vm_name               = "bootcamp_Week5-AppVM3"
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
-  network_interface_ids = [azurerm_network_interface.nic3.id]
-  vm_size               = var.public_vm_size
+  public_vm_size        = var.public_vm_size
   availability_set_id   = azurerm_availability_set.availability_set1.id
+  network_interface_ids = [azurerm_network_interface.nic3.id]
 
-  storage_os_disk {
-    name              = "bootcamp_Week5-AppVM3_OsDisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-
-  }
-
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-
-  os_profile {
-    computer_name  = "bootcampWeek5VM3"
-    admin_username = var.ubuntu_username
-    admin_password = random_string.password.result
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
+  storage_os_disk_name = "bootcamp_Week5-AppVM3_OsDisk"
+  computer_name        = "bootcampWeek5VM3"
+  ubuntu_username      = var.ubuntu_username
+  admin_password       = random_string.password.result
 }
+
 
 # resource "azurerm_virtual_machine_extension" "app3_terraform" {
 #   name                 = "VM3_customscript"
@@ -458,6 +404,7 @@ resource "azurerm_virtual_machine" "vm3" {
 #     }
 # SETTINGS
 # }
+
 
 # Create a Linux virtual machine for db
 resource "azurerm_virtual_machine" "dbvm" {
@@ -492,23 +439,5 @@ resource "azurerm_virtual_machine" "dbvm" {
   os_profile_linux_config {
     disable_password_authentication = false
   }
-}
-
-
-
-#Get data from vnet
-data "azurerm_virtual_network" "data_vnet" {
-  name                = azurerm_virtual_network.vnet.name
-  resource_group_name = var.resource_group_name
-}
-#Get data from load balancer
-data "azurerm_lb" "data_lb" {
-  name                = azurerm_lb.publicLB.name
-  resource_group_name = var.resource_group_name
-}
-#Get data from backend address pool
-data "azurerm_lb_backend_address_pool" "data_pool" {
-  name            = azurerm_lb_backend_address_pool.backend_address_pool_public.name
-  loadbalancer_id = data.azurerm_lb.data_lb.id
 }
 

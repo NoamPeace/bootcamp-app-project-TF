@@ -1,12 +1,12 @@
 
 # Print public ip
-output "public_ip_address" {
-  value = data.azurerm_public_ip.ip.ip_address
-}
+# output "public_ip_address" {
+#  value = var.public_ip_address
+# }
 
 # Print password for the VMs
 output "random_password_generated" {
-  description = "The password is:"
+  description = "The random password generated:"
   value       = random_string.password.*.result
   sensitive   = false
 
