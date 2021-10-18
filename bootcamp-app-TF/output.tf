@@ -8,4 +8,6 @@ output "public_ip_address" {
 output "random_password_generated" {
   description = "The password is:"
   value       = random_password.password.*.result
+  sensitive   = true
+
 }
