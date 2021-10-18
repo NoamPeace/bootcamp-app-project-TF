@@ -1,5 +1,5 @@
 # Generate a random password
-resource "random_password" "password" {
+resource "random_string" "password" {
   length           = 16
   special          = true
   min_upper        = 1
@@ -334,7 +334,7 @@ resource "azurerm_virtual_machine" "vm" {
   os_profile {
     computer_name  = "bootcampWeek5VM1"
     admin_username = var.ubuntu_username
-    admin_password = random_password.password.result
+    admin_password = random_string.password.result
   }
 
   os_profile_linux_config {
@@ -385,7 +385,7 @@ resource "azurerm_virtual_machine" "vm2" {
   os_profile {
     computer_name  = "bootcampWeek5VM2"
     admin_username = var.ubuntu_username
-    admin_password = random_password.password.result
+    admin_password = random_string.password.result
   }
 
   os_profile_linux_config {
@@ -436,7 +436,7 @@ resource "azurerm_virtual_machine" "vm3" {
   os_profile {
     computer_name  = "bootcampWeek5VM3"
     admin_username = var.ubuntu_username
-    admin_password = random_password.password.result
+    admin_password = random_string.string.result
   }
 
   os_profile_linux_config {
@@ -486,7 +486,7 @@ resource "azurerm_virtual_machine" "dbvm" {
   os_profile {
     computer_name  = "bootcampWeek5VM4-DB"
     admin_username = var.ubuntu_username
-    admin_password = random_password.password.result
+    admin_password = random_string.password.result
   }
 
   os_profile_linux_config {
