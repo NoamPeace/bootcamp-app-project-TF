@@ -51,6 +51,7 @@ variable "ubuntu_username" {
 variable "pg_admin" {
   type        = string
   description = "Administrator user name for the database"
+  default     = "postgres"
 }
 
 variable "pg_admin_password" {

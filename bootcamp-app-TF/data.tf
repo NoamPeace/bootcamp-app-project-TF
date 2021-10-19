@@ -1,3 +1,7 @@
+# Get data from tfvars file
+# data "tfvars_file" "pgtfvars" {
+#   filename = "pg.tfvars"
+# }
 
 #Get data from vnet
 data "azurerm_virtual_network" "data_vnet" {
